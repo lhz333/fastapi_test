@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from config.db_conf import get_db
-from schemas.users import UserRequest
+from schemas.users import UserRequest, UserAuthResponse, UserInfoResponse
 from crud import users
+from utils.response import success_response
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -18,11 +20,13 @@ async def register(user_data: UserRequest, db: AsyncSession = Depends(get_db),):
 
   token = await users.create_token(db, user.id)
 
-  return {
-    "code": 200,
-    "message": "注册成功",
-    "data": {
-      "token": token,
-      "userInfo": user
-    }
-  }
+  # return {
+  #   "code": 200,
+  #   "message": "注册成功",
+  #   "data": {
+  #     "token": token,
+  #     "userInfo": user
+  #   }
+  # }
+  res_data = UserAuthResponse(token=token, user_info=UserInfoResponse.model_validate(user))
+  return success_response(message="注册成功!", data=res_data)
