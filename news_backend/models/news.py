@@ -37,7 +37,7 @@ class NewsList(Base):
     # Optional 是允许字段为空的开关
     author: Mapped[Optional[str]] = mapped_column(String(50), comment="作者")
     # ForeignKey 核心就是建立表与表之间的关联
-    category_id: Mapped[int] = mapped_column(Integer, ForeignKey("news_category.id"), nullable=False, comment="分类ID")
+    category_id: Mapped[int] = mapped_column(Integer, ForeignKey(Category.id), nullable=False, comment="分类ID")
     views: Mapped[int] = mapped_column(Integer, default=0, nullable=False, comment='浏览量')
     publish_time: Mapped[datetime] = mapped_column(DateTime, default=datetime.now, comment="发布时间")
 
